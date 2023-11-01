@@ -135,6 +135,16 @@ export default class GameController {
       this.gamePlay.redrawPositions(this.characters);
     }
       // GamePlay.showError('Сейчас должен быть ход игрока!') 
+
+
+    if (characterInCell && this.canMove && (characterInCell.character.type === 'Undead' || characterInCell.character.type === 'Daemon' || characterInCell.character.type === 'Vampire')) {
+      let damage = Math.max(this.activeCharacterLast.character.attack - characterInCell.character.defence, this.activeCharacterLast.character.attack * 0.1);
+      (async () => {
+        await this.gamePlay.showDamage(index, damage);
+       this.gamePlay.redrawPositions(this.characters);
+      })();
+      characterInCell.character.health = characterInCell.character.health - damage;
+    }
   }
 
   onCellEnter(index) {
@@ -144,6 +154,7 @@ export default class GameController {
       this.gamePlay.showCellTooltip(`\u{1F396} ${characterInCell.character.level} \u{2694} ${characterInCell.character.attack} \u{1F6E1} ${characterInCell.character.defence} \u{2764} ${characterInCell.character.health}`, index);
       if ((characterInCell.character.type === 'Bowman' || characterInCell.character.type === 'Swordsman' || characterInCell.character.type === 'Magician')) {
         this.gamePlay.setCursor(cursors.pointer);
+        this.notAllowed = false;
       }
     }
 
@@ -153,6 +164,7 @@ export default class GameController {
         if (element === index) {
           this.gamePlay.setCursor(cursors.pointer);
           this.gamePlay.selectCell(index, "green");
+          this.notAllowed = false;
         } 
       });
 
@@ -168,6 +180,7 @@ export default class GameController {
         if (element === index) {
           this.gamePlay.setCursor(cursors.crosshair);
           this.gamePlay.selectCell(index, "red");
+          this.notAllowed = false;
         }
       });
 
