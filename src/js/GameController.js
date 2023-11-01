@@ -16,6 +16,7 @@ export default class GameController {
   constructor(gamePlay, stateService) {
     this.gamePlay = gamePlay;
     this.stateService = stateService;
+    this.turn = 1;
     this.gameState = new GameState();
   }
 
@@ -117,9 +118,17 @@ export default class GameController {
       }
       this.gamePlay.selectCell(index);
       this.activeCharacter = index;
-    } else {
-      GamePlay.showError('Сейчас должен быть ход игрока!')
+      this.activeCharacterLast = characterInCell;
+      this.canMove = 1;
+    } 
+
+    if (!characterInCell && this.canMove !== null) {
+      this.gamePlay.deselectCell( this.activeCharacterLast.position)
+      this.activeCharacterLast.position = index;
+      this.canMove = null;
+      this.gamePlay.redrawPositions(this.characters);
     }
+      // GamePlay.showError('Сейчас должен быть ход игрока!') 
   }
 
   onCellEnter(index) {
