@@ -11,6 +11,7 @@ import Team from './Team';
 import GameState from './GameState';
 import GamePlay from './GamePlay';
 import cursors from './cursors';
+import distance from './distance';
 
 export default class GameController {
   constructor(gamePlay, stateService) {
@@ -111,6 +112,10 @@ export default class GameController {
   onCellClick(index) {
     // TODO: react to click
 
+    if (this.notAllowed) {
+      throw new Error('Недопустимое действие');
+    }
+
     const characterInCell = this.checkCharacterInCell(index);
     if (characterInCell && (characterInCell.character.type === 'Bowman' || characterInCell.character.type === 'Swordsman' || characterInCell.character.type === 'Magician')) {
       if (this.activeCharacter || this.activeCharacter === 0) {
@@ -126,6 +131,7 @@ export default class GameController {
       this.gamePlay.deselectCell( this.activeCharacterLast.position)
       this.activeCharacterLast.position = index;
       this.canMove = null;
+      this.gamePlay.deselectCell(index)
       this.gamePlay.redrawPositions(this.characters);
     }
       // GamePlay.showError('Сейчас должен быть ход игрока!') 
@@ -140,6 +146,37 @@ export default class GameController {
         this.gamePlay.setCursor(cursors.pointer);
       }
     }
+
+    if (!characterInCell && this.canMove) {
+      const range = distance(this.activeCharacterLast, this.activeCharacter, 'move');
+      range.forEach(element => {
+        if (element === index) {
+          this.gamePlay.setCursor(cursors.pointer);
+          this.gamePlay.selectCell(index, "green");
+        } 
+      });
+
+      if (!range.includes(index)) {
+        this.gamePlay.setCursor(cursors.notallowed);
+        this.notAllowed = true;
+      }
+    }
+
+    if (characterInCell && this.canMove && (characterInCell.character.type === 'Undead' || characterInCell.character.type === 'Daemon' || characterInCell.character.type === 'Vampire')) {
+      const range = distance(this.activeCharacterLast, this.activeCharacter, 'attack');
+      range.forEach(element => {
+        if (element === index) {
+          this.gamePlay.setCursor(cursors.crosshair);
+          this.gamePlay.selectCell(index, "red");
+        }
+      });
+
+      if (!range.includes(index)) {
+        this.gamePlay.setCursor(cursors.notallowed);
+        this.notAllowed = true;
+      }
+    }
+
   }
 
   onCellLeave(index) {
@@ -147,6 +184,11 @@ export default class GameController {
 
     const characterInCell = this.checkCharacterInCell(index);
     this.gamePlay.setCursor(cursors.auto);
+
+    if (this.activeCharacterLast && this.activeCharacterLast.position !== index) {
+      this.gamePlay.deselectCell(index);
+    }
+
     if (characterInCell) {
       this.gamePlay.hideCellTooltip(index);
     }
