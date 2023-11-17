@@ -16,11 +16,10 @@ export default class Team {
   constructor(characters) {
     if (characters !== null) {
       const char = [];
-      for (let i = 0; i < characters.length; i++) {
+      for (let i = 0; i < characters.length; i += 1) {
         char.push(characters[i]);
       }
       this.characters = char;
     }
   }
-
 }
