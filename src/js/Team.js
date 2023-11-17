@@ -14,11 +14,13 @@
 export default class Team {
   // TODO: write your logic here
   constructor(characters) {
-    const char = [];
-    for (let i = 0; i < characters.length; i++) {
-      char.push(characters[i]);
+    if (characters !== null) {
+      const char = [];
+      for (let i = 0; i < characters.length; i++) {
+        char.push(characters[i]);
+      }
+      this.characters = char;
     }
-    this.characters = char;
-    // this.characters = characters;
   }
+
 }
