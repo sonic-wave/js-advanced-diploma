@@ -118,12 +118,12 @@ export default class GameController {
       return newResult;
     }
 
-    for (let i = 0; i < heroTeam.length; i = +1) {
+    for (let i = 0; i < heroTeam.length; i += 1) {
       const char = new PositionedCharacter(heroTeam[i], randomHeroPosition());
       characters.push(char);
       heroCharacters.push(char);
     }
-    for (let i = 0; i < enemyTeam.length; i = +1) {
+    for (let i = 0; i < enemyTeam.length; i += 1) {
       const char = new PositionedCharacter(enemyTeam[i], randomEnemyPosition());
       characters.push(char);
       enemyCharacters.push(char);
@@ -196,7 +196,7 @@ export default class GameController {
 
   loadGameCompTeam(team) {
     this.compCharacters = [];
-    for (let i = 0; i < team.length; i = +1) {
+    for (let i = 0; i < team.length; i += 1) {
       const className = team[i].character.type[0].toUpperCase() + team[i].character.type.slice(1);
       const char = this.createClass(className, team[i].character.level);
 
@@ -209,7 +209,7 @@ export default class GameController {
 
   loadGameUserTeam(team) {
     this.userCharacters = [];
-    for (let i = 0; i < team.length; i = +1) {
+    for (let i = 0; i < team.length; i += 1) {
       const className = team[i].character.type[0].toUpperCase() + team[i].character.type.slice(1);
       const char = NewFunctions.createClass(className, team[i].character.level);
 
@@ -500,6 +500,10 @@ export default class GameController {
   }
 
   nextLevel() {
+    if (this.level === 4) {
+      alert('Вы победили!');
+      this.removeCellListeners();
+    }
     this.userTeam.forEach((item) => {
       NewFunctions.levelUp(item);
     });
@@ -529,13 +533,7 @@ export default class GameController {
       return 'mountain';
     }
 
-    if (this.level === 4) {
-      alert('Вы победили!');
-      this.removeCellListeners();
-      return 'mountain';
-    }
-
-    return 'prairie';
+    return 'mountain';
   }
 
   setCharactersArr() {
@@ -610,12 +608,12 @@ export default class GameController {
       return newResult;
     }
 
-    for (let i = 0; i < this.userTeam.length; i = +1) {
+    for (let i = 0; i < this.userTeam.length; i += 1) {
       const char = new PositionedCharacter(this.userTeam[i].character, randomHeroPosition());
       characters.push(char);
     }
 
-    for (let i = 0; i < enemyTeam.length; i = +1) {
+    for (let i = 0; i < enemyTeam.length; i += 1) {
       const char = new PositionedCharacter(enemyTeam[i], randomEnemyPosition());
       characters.push(char);
       enemyCharacters.push(char);
